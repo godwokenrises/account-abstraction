@@ -1,4 +1,3 @@
-import { Wallet } from 'ethers'
 import { ethers } from 'hardhat'
 import { expect } from 'chai'
 import {
@@ -8,39 +7,34 @@ import {
   DummyContract,
 } from '../typechain'
 import {
-  createWalletOwner,
   deployGaslessEntryPoint
 } from './testutils'
 import { hexConcat, parseEther } from 'ethers/lib/utils'
 import { UserOperationStruct } from '../typechain/contracts/core/GaslessEntryPoint'
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 
 describe('EntryPoint with VerifyingPaymaster', function () {
   let entryPoint: GaslessEntryPoint
-  let walletOwner: Wallet
-  let whitelistUser: Wallet
-  let invalidUser: Wallet
-  const ethersSigner = ethers.provider.getSigner()
-
-  let dummyContract: DummyContract
-
   let paymaster: GaslessDemoPaymaster
-  const fullnode: Wallet = createWalletOwner()
+  let dummyContract: DummyContract
+  let whitelistUser: SignerWithAddress; 
+  let invalidUser: SignerWithAddress;
+  
   beforeEach(async function () {
+    const [admin, _whitelistUser, _invalidUser, fullnode] = await ethers.getSigners();
+    whitelistUser = _whitelistUser 
+    invalidUser = _invalidUser
+
     const DummyContract = await ethers.getContractFactory("DummyContract")
     dummyContract = await DummyContract.deploy()
     console.log(`Deploy dummy contract: ${dummyContract.address}`)
 
     entryPoint = await deployGaslessEntryPoint(fullnode.address, 1, 1)
 
-    walletOwner = createWalletOwner()
-    whitelistUser = createWalletOwner()
-    invalidUser = createWalletOwner()
-
-    console.log(`wallet owner: ${walletOwner.address}`)
     console.log(`User in whitelist: ${whitelistUser.address}`)
     console.log(`User not in whitelist: ${invalidUser.address}`)
 
-    paymaster = await new GaslessDemoPaymaster__factory(ethersSigner).deploy(entryPoint.address)
+    paymaster = await new GaslessDemoPaymaster__factory(admin).deploy(entryPoint.address)
     console.log(`Paymaster: ${paymaster.address}`)
     await paymaster.addStake(99999999, { value: parseEther('2') })
     await paymaster.addWhitelistAddress(whitelistUser.address)
@@ -49,7 +43,7 @@ describe('EntryPoint with VerifyingPaymaster', function () {
     // DummyContract.test(1, 1)
     const callData = "0x4dd3b30b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001"
   describe('#validatePaymasterUserOp', () => {
-    it('whitelist valid', async () => {
+    it('whitelist valid handleOp', async () => {
       // Mock UserOp
       const userOp: UserOperationStruct = {
           callContract: dummyContract.address,
