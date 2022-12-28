@@ -3,6 +3,8 @@ import {
 	addPaymasterStake,
   addWhitelistAddress,
   deployPaymaster,
+  depositPaymasterStake,
+  getBalance,
 } from "../deploy/deploy-gasless-contract";
 
 async function main() {
@@ -10,10 +12,12 @@ async function main() {
 
   // await addWhitelistAddress(
   //   "0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47",
-  //   "0xFb2C72d3ffe10Ef7c9960272859a23D24db9e04A"
+  //   "0x73b72d6EE63e16c898AD18C7f447846BfC3AB1aC"
   // );
 
-  await addPaymasterStake("0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47", "1");
+  //await addPaymasterStake("0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47", "1000");
+  await depositPaymasterStake("0xc52059c8cd8f0817f9e67009e014322f5239547f", "0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47", "1000");
+  await getBalance("0xc52059c8cd8f0817f9e67009e014322f5239547f", "0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47")
 }
 
 const deployPaymasterContract = async () => {

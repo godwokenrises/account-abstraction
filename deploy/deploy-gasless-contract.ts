@@ -36,6 +36,23 @@ export const addPaymasterStake = async function (paymasterAddr: string, ethAmoun
   console.log('tx receipt: ', receipt);
 }
 
+export const depositPaymasterStake = async function (entrypointAddr: string, paymasterAddr: string, ethAmount: string) {
+  const [admin] = await ethers.getSigners()
+  const Contract = await ethers.getContractFactory("GaslessEntryPoint")
+  const contract = await Contract.attach(entrypointAddr);
+  const tx = await contract.connect(admin).depositTo(paymasterAddr, { value: ethers.utils.parseEther(ethAmount) })
+  console.log('depositPaymasterStake tx sent: ', tx.hash);
+  const receipt = await tx.wait();
+  console.log('tx receipt: ', receipt);
+}
+
+export const getBalance = async function (entrypointAddr: string, paymasterAddr: string) {
+  const Contract = await ethers.getContractFactory("GaslessEntryPoint")
+  const contract = await Contract.attach(entrypointAddr);
+  const balance = await contract.balanceOf(paymasterAddr);
+  console.log('paymaster balance: ', balance);
+}
+
 export const addWhitelistAddress = async function (paymasterAddr: string, whitelistAddress: string) {
   const [admin] = await ethers.getSigners()
   const Contract = await ethers.getContractFactory("GaslessDemoPaymaster")
