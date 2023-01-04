@@ -26,6 +26,16 @@ export const deployPaymaster = async function (entrypointAddress: string) {
   console.log('==Paymaster addr=', contract.address)
 }
 
+export const deployAlwaysSuccessPaymaster = async function (entrypointAddress: string) {
+  const [admin] = await ethers.getSigners()
+
+  const Contract = await ethers.getContractFactory('GaslessAlwaysSuccessPaymaster')
+  const contract = await Contract.connect(admin).deploy(entrypointAddress)
+  await contract.deployed()
+
+  console.log('==Always-success Paymaster addr=', contract.address)
+}
+
 export const addPaymasterStake = async function (paymasterAddr: string, ethAmount: string) {
   const [admin] = await ethers.getSigners()
   const Contract = await ethers.getContractFactory('GaslessDemoPaymaster')
@@ -51,6 +61,13 @@ export const getBalance = async function (entrypointAddr: string, paymasterAddr:
   const contract = await Contract.attach(entrypointAddr)
   const balance = await contract.balanceOf(paymasterAddr)
   console.log('paymaster balance: ', balance)
+}
+
+export const getStake = async function (paymasterAddr: string) {
+  const Contract = await ethers.getContractFactory("GaslessDemoPaymaster")
+  const contract = await Contract.attach(paymasterAddr)
+  const balance = await contract.getDeposit()
+  console.log('paymaster getDeposit: ', balance)
 }
 
 export const addWhitelistAddress = async function (paymasterAddr: string, whitelistAddress: string) {

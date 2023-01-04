@@ -2,22 +2,27 @@ import hre from 'hardhat'
 import {
   addPaymasterStake,
   addWhitelistAddress,
+  deployAlwaysSuccessPaymaster,
   deployPaymaster,
   depositPaymasterStake,
-  getBalance
+  getBalance,
+  getStake
 } from '../deploy/deploy-gasless-contract'
 
 async function main () {
   // await deployPaymasterContract();
+  // await deployAlwaysSuccessPaymaster("0xc52059c8cd8f0817f9e67009e014322f5239547f");
+
 
   // await addWhitelistAddress(
   //   "0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47",
   //   "0x73b72d6EE63e16c898AD18C7f447846BfC3AB1aC"
   // );
 
-  // await addPaymasterStake("0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47", "1000");
-  await depositPaymasterStake('0xc52059c8cd8f0817f9e67009e014322f5239547f', '0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47', '1000')
-  await getBalance('0xc52059c8cd8f0817f9e67009e014322f5239547f', '0xa8a0B28AbC58290EF91Dd4375Ea5e1274dE16f47')
+  //await addPaymasterStake("0xb3f9633d9603D39424ff107B4846708c7E6dFaeA", "1000");
+  await getStake("0xb3f9633d9603D39424ff107B4846708c7E6dFaeA")
+  // await depositPaymasterStake('0xc52059c8cd8f0817f9e67009e014322f5239547f', '0xb3f9633d9603D39424ff107B4846708c7E6dFaeA', '1000')
+  // await getBalance('0xc52059c8cd8f0817f9e67009e014322f5239547f', '0xb3f9633d9603D39424ff107B4846708c7E6dFaeA')
 }
 
 const deployPaymasterContract = async () => {
