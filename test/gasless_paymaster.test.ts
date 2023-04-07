@@ -287,6 +287,7 @@ describe('Gasless EntryPoint with whitelist paymaster', function () {
           maxPriorityFeePerGas: 1,
           paymasterAndData: hexConcat([paymaster.address, '0x1234'])
         }
+        await paymaster.addAvailAddr(erc20.address);
         await paymaster.addWhitelistAddress(sender.address)
         const tx = await entryPoint.connect(sender).handleOp(userOp, { gasLimit: 400000, gasPrice: 0 })
         await tx.wait()
