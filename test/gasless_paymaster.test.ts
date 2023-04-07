@@ -36,7 +36,9 @@ async function getOrDeployEntrypointContract (fullnodeMiner: string, paymasterSt
       })
     })
     const data = JSON.parse(await response.text())
-    const addr = data.result.nodeInfo.gaslessTx.entrypointAddress
+    // compatible with https://github.com/godwokenrises/godwoken/pull/1005
+    const addr = data.result.nodeInfo.gaslessTx.entrypointAddress || data.result.fullnodeInfo.gaslessTx.entrypointAddress
+    console.log(`entrypoint address: ${addr}`)
     return connectGaslessEntryPoint(addr)
   }
   return deployGaslessEntryPoint(fullnodeMiner, paymasterStake, unstakeDelaySecs)
@@ -285,6 +287,7 @@ describe('Gasless EntryPoint with whitelist paymaster', function () {
           maxPriorityFeePerGas: 1,
           paymasterAndData: hexConcat([paymaster.address, '0x1234'])
         }
+        await paymaster.addAvailAddr(erc20.address);
         await paymaster.addWhitelistAddress(sender.address)
         const tx = await entryPoint.connect(sender).handleOp(userOp, { gasLimit: 400000, gasPrice: 0 })
         await tx.wait()
