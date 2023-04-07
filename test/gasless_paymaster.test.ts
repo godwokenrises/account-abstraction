@@ -36,7 +36,9 @@ async function getOrDeployEntrypointContract (fullnodeMiner: string, paymasterSt
       })
     })
     const data = JSON.parse(await response.text())
-    const addr = data.result.nodeInfo.gaslessTx.entrypointAddress
+    // compatible with https://github.com/godwokenrises/godwoken/pull/1005
+    const addr = data.result.nodeInfo.gaslessTx.entrypointAddress || data.result.fullnodeInfo.gaslessTx.entrypointAddress
+    console.log(`entrypoint address: ${addr}`)
     return connectGaslessEntryPoint(addr)
   }
   return deployGaslessEntryPoint(fullnodeMiner, paymasterStake, unstakeDelaySecs)
